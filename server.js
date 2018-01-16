@@ -16,6 +16,12 @@ const app = express();
 // app.use(bodyParser.json({limit:'5mb'}));    
 // app.use(bodyParser.urlencoded({extended:true, limit:'5mb'}));  
 
+// app.use(express.static('./public'))
+app.use(express.static(__dirname + '/scripts'))
+app.use(express.static(__dirname + '/styles'))
+// app.use(express.static(__dirname + '/scripts'))
+// app.use(express.static('styles'))
+
 //To prevent errors from Cross Origin Resource Sharing, we will set our headers to allow CORS with middleware like so:
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
