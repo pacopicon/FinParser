@@ -38,6 +38,10 @@ app.get('/', (req, res, next) => {
   res.sendFile(__dirname + '/index.html')
 })
 
+// app.get('/', (req, res, next) => {
+//   res.sendFile(__dirname + '../index.html')
+// })
+
 app.set('port', process.env.PORT || 7777)
 const server = app.listen(app.get('port'), () => {
   console.log(`Hi Paco, express is running on PORT ${server.address().port}`)
