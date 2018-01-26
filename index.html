@@ -8,13 +8,62 @@
   src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
   integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
   crossorigin="anonymous"></script>
-  <script src="http://d3js.org/d3.v3.min.js"></script>
-  <script type='text/javascript' src="app.js"></script>
+  <script type='text/javascript' src="d3.min.js"></script>
+  <!-- <script type='text/javascript' src="d3.js"></script> -->
+  <script type='text/javascript' src="securitiesInfo.js"></script>
+  <script type='text/javascript' src="fetchAPI.js"></script>
+  <script type='text/javascript' src="lineChart.js"></script>
   <link rel="stylesheet" type="text/css" href="styles.css" />
 </head>
 <body>
   
-<p class="hello">Hello!</p>
-<button class="button">Click here</button>
+  <p class="hello">Hello!</p>
+  <button class="button">Click here</button>
+
+  <div id="option">
+    <input name="updateButton" 
+           type="button" 
+           value="Update" 
+           onclick="updateData()" />
+  </div>
+
+  <select id="securitySelection"></select>
+  <select id="timeSelection"></select>
+
+  <div id="selectedSecurityValue"></div>
+  <div id="selectedTimeValue"></div>
+
+
+  <!--  chart  -->
+
+  <div className="lineChart">
+    <div className="stockInfo">
+      <h1><p class="TEXT[0]&TEXT[1]"><small class="sector:TEXT[2]"></small></p></h1>
+      <div className="rightInfo col-xs-6">
+        <h3 class="open"></h3>
+        <h3 class="high"></h3>
+        <h3 class="low"></h3>
+      </div>
+      <div className="leftInfo col-xs-6">
+        <h3 class="close"></h3>
+        <h3 class="volume"></h3>
+        <small class="lastUpdate:date&alert"></small>
+      </div>
+    </div>
+    <!-- <div className="select">
+      <form>
+        {
+          this.props.securities ?
+            <select onChange={this.props.handleSymbolSelection}>
+              {this.props.renderOptions(this.props.securities)}
+            </select> : <div>waiting on Data</div>
+        }
+        <select onChange={this.props.handleTimeScaleSelection}>
+          {this.props.renderOptions(this.props.timeScales)}
+        </select>
+      </form>
+    </div> -->
+  </div>
+
 </body>
 </html>

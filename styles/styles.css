@@ -1,31 +1,90 @@
 body { font: 12px Arial;}
 
-    .hello {
-        color: red;
-        font-size: 50px;
-    }
+.hello {
+    color: red;
+    font-size: 50px;
+}
 
-    path { 
-        stroke: steelblue;
-        stroke-width: 2;
-        fill: none;
-    }
+path { 
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
 
-    .axis path,
-    .axis line {
-        fill: none;
-        stroke: grey;
-        stroke-width: 1;
-        shape-rendering: crispEdges;
-    }
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
 
-    .button {
-      background-color: blue;
-      height: 2em;
-      width: 10em;
-      color: white;
-    }
+.button {
+  background-color: blue;
+  height: 2em;
+  width: 10em;
+  color: white;
+}
 
-    .button:hover {
-      background-color: lightgray;
-    }
+.button:hover {
+  background-color: lightgray;
+}
+
+.lineChart {
+  height: 100%;
+}
+
+.xAxis, .yAxis {
+  fill: none;
+  stroke: white;
+  color: white;
+  background-color: white;
+}
+
+path.domain {
+  fill: none;
+  stroke: white;
+}
+
+path {
+  fill: none;
+  /*fill: #58B5FD;*/
+  shape-rendering: crispEdges;
+  /*stroke: #58B5FD;*/
+  stroke: white;
+  stroke-width: 2;
+  transition-timing-function: ease-in-out;
+}
+
+.tick line{
+  opacity: 0.2;
+  stroke: white;
+}
+
+.tick text {
+  fill: white;
+  font-size: 20px;
+}
+
+.xAxis {
+  text-anchor: end;
+}
+
+.xAxis .tick text {
+  y: -60px;
+  transform: rotate(-45deg);
+  font-size: 20px;
+}
+
+.chart .changeChart-enter .line {
+  /*transition-duration: 1500ms;*/
+  /*transition: all 1500 ease-in;*/
+  /*opacity: 0.5;*/
+}
+
+.chart .changeChart-enter.changeChart-enter-active .line {
+  transition-duration: 3000ms;
+  /*transition: all 1500 ease-in;*/
+  /*opacity: 1;*/
+  /*transition: opacity .5 ease-in;*/
+}
