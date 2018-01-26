@@ -73,7 +73,7 @@ $(document).ready(function(){
 		$('#selectedTimeValue').text($('#timeSelection > option:selected').val())
 
 		sec = $('option:selected').val()
-		time =  $('#timeSelection > option:selected').val()
+		 time =  $('#timeSelection > option:selected').val()
 
 		console.log('time = ' + time + ', sec = ' + sec)
 
