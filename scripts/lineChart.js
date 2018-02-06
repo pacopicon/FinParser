@@ -1,63 +1,31 @@
+// importing securities from securitiesinfo.js
+// 
+
 $(document).ready(function(){
 
 
-// $(document).ready(function(){
-  $("button").click(function(){
-      $(this).hide(2000);
-  });
-// });
-
 // Public Variables
 
-  security =  'MMM',
+  var security,
   timeScales = {'1D':1, '1W':8, '1M':32, '3M':94, '6M':187, '1Y':366, '2Y':731},
-  timeScale = 1,
-  TEXT = ['MMM','3M Company', 'Industrials'],
-  NUMERIC = [new Date, 0, 0, 0, 0, 0, 0],
-  data = [0,0,0,0,0],
-  GRAPHIC = { "Meta Data":{},"Time Series (Daily)":{} }
-
-// form select code:
-
-// function renderOptions(options) {
-//     var selection = []
-//     if (Array.isArray(options)) { // Does var options refer to array of Securities info objects or to Object of timeScale / modifier  key-values?
-//       selection = function(opt, i) jQuery set HTML Func { '<option key={i} value={[opt['Symbol'], opt.Name, opt.Sector]}>{opt.Name}</option>' }
-//     } else {
-//       var options = Object.keys(options) // options begins as object here.  need to make it into array
-//       selection = function(opt, i) jQuery set HTML Func {'<option key={i} value={opt}>{opt}</option>'}
-//     }
-//     return options.map(selection)
-//   }
+  timeScale
+  // TEXT = ['MMM','3M Company', 'Industrials'],
+  // NUMERIC = [new Date, 0, 0, 0, 0, 0, 0],
+  // data = [0,0,0,0,0],
+  // GRAPHIC = { "Meta Data":{},"Time Series (Daily)":{} }
 
 
-
-
-  $.each(securities, function(index) {
-  		// console.log(securities[index].Name)   
-     	$('#securitySelection')
-         .append($("<option></option>")
-                    .attr("value", securities[index].Symbol)
-                    .text(securities[index].Name));  
-	});
-
-	$.each(timeScales, function(key, value) {
-  	   
-     $('#timeSelection')
-         .append($("<option></option>")
-                    .attr("value", value)
-                    .text(key)); 
-	});
-
+// Variables for printSecSel(), printTimeSel(), and callDatePriceAPI()
 	var orderOfOps = 'neitherHasGone'
 
+// printSecSel() -> 
 	function printSecSel() {
 		$('#selectedSecurityValue').text($('#securitySelection > option:selected').val())
 
-		sec = $('option:selected').val()
-		time =  $('#timeSelection > option:selected').val()
+		security = $('option:selected').val()
+		timeScale =  $('#timeSelection > option:selected').val()
 
-		console.log('time = ' + time + ', sec = ' + sec)
+		console.log('timeScale = ' + timeScale + ', security = ' + security)
 
 		if (orderOfOps === 'printSecSelWentFirst' || orderOfOps === 'neitherHasGone') {
 			orderOfOps = 'printSecSelWentFirst'
@@ -72,12 +40,10 @@ $(document).ready(function(){
 	function printTimeSel() {
 		$('#selectedTimeValue').text($('#timeSelection > option:selected').val())
 
-		sec = $('option:selected').val()
-		 time =  $('#timeSelection > option:selected').val()
+		security = $('option:selected').val()
+		timeScale =  $('#timeSelection > option:selected').val()
 
-		console.log('time = ' + time + ', sec = ' + sec)
-
-
+		console.log('timeScale = ' + timeScale + ', security = ' + security)
 
 		if (orderOfOps === 'printTimeSelWentFirst' || orderOfOps === 'neitherHasGone') {
 			orderOfOps = 'printTimeSelWentFirst'
@@ -88,49 +54,58 @@ $(document).ready(function(){
 	}
 
 
-	
-	$('#securitySelection').click(function() {
+	///////////////////////// Functions called by DOM //////////////////////////
+
+
+	// Securities select
+  $.each(securities, function(index) {
+  		// console.log(securities[index].Name)   
+     	$('#securitySelection')
+         .append($("<option></option>")
+                    .attr("value", securities[index].Symbol)
+                    .text(securities[index].Name));  
+	});
+
+// TimeScale select
+	$.each(timeScales, function(key, value) {
+  	   
+     $('#timeSelection')
+         .append($("<option></option>")
+                    .attr("value", value)
+                    .text(key)); 
+	});
+
+// Callback activated by security select
+	$('#securitySelection').change(function() {
 		printSecSel()
+		callDatePriceAPI(timeScale, security)
 	})
-	
 
-	$('#timeSelection').click(function() {
+// Callback activated by time select
+	$('#timeSelection').change(function() {
 		printTimeSel()
-	})	
-	
+		callDatePriceAPI(timeScale, security).then(
+			function () {
+				paintChart(output)
+			})
+	})	  
 
-	
+
+//            __   ______                                   __           
+//           |  \ /      \                                 |  \          
+//       ____| $$|  $$$$$$\        _______   ______    ____| $$  ______  
+//      /      $$ \$$__| $$       /       \ /      \  /      $$ /      \ 
+//     |  $$$$$$$  |     $$      |  $$$$$$$|  $$$$$$\|  $$$$$$$|  $$$$$$\
+//     | $$  | $$ __\$$$$$\      | $$      | $$  | $$| $$  | $$| $$    $$
+//     | $$__| $$|  \__| $$      | $$_____ | $$__/ $$| $$__| $$| $$$$$$$$
+//      \$$    $$ \$$    $$       \$$     \ \$$    $$ \$$    $$ \$$     \
+//       \$$$$$$$  \$$$$$$         \$$$$$$$  \$$$$$$   \$$$$$$$  \$$$$$$$
 
 
-  
-
- function handleSymbolSelection(event, timeScale) {
-    var string = event.target.value
-    var securityArray = string.split(',')
-    console.log('handleSymbolSelection ("symbol") securityArray[0] = ' + securityArray[0]);
-    this.setState({
-      TEXT: securityArray,
-      timeScale: timeScale
-    }, function onceStateIsUpdated() {
-      this.callDatePriceAPI()
-    })
-  }
-
-  function handleTimeScaleSelection(event) {
-    const { TEXT, timeScales } = this.state
-    var modifier = timeScales[event.target.value]
-    console.log("handleTimeScaleSelection modifier = ", modifier);
-    console.log("typeof modifier = ", typeof modifier);
-    // this.changeChartParams(security, modifier)
-    this.setState({
-      TEXT: TEXT,
-      timeScale: modifier
-    }, function onceStateIsUpdated() {
-      this.callDatePriceAPI()
-    })
-  }
-
-// d3 line chart code:
+// Public variables
+var datePrice,
+		hiLoDataOBJ,
+		hiLoDataARRAY
 
 
 // Set the dimensions of the canvas / graph
@@ -171,65 +146,87 @@ var svg = d3.select("body").append("svg")
 /////////////////////////////////////////////////////////////////////////////////
 
 // Get the data
-// d3.csv("data.csv", function(error, data) {
-//   data.forEach(function(d) {
-//     d.date = parseDate(d.date);
-//     d.close = +d.close;
-//   }); 
 
-//   // Scale the range of the data
-//   xScale.domain(d3.extent(datePrice, function(d) { return d.date }))
-// 	yScale.domain(d3.extent(datePrice, function(d) { return d.price }))
+function paintChart(output) {
+	datePrice = output.datePrice
 
-//   // Add the valueline path.
-//   svg.append("path")
-//     .attr("class", "line")
-//     .attr("d", valueline(data));
+		console.log(datePrice)
 
-//   // Add the X Axis
-//   svg.append("g")
-//     .attr("class", "x axis")
-//     .attr("transform", "translate(0," + height + ")")
-//     .call(xAxis);
 
-//   // Add the Y Axis
-//   svg.append("g")
-//     .attr("class", "y axis")
-//     .call(yAxis);
+  // datePrice.forEach(function(d) {
+  //   d.date = parseDate(d.date);
+  //   d.close = +d.close;
+  // }); 
 
-// });
+  // Scale the range of the datePrice
+  xScale.domain(d3.extent(datePrice, function(d) { return d.date }))
+	yScale.domain(d3.extent(datePrice, function(d) { return d.price }))
 
-// ** Update data section (Called from the onclick)
-function updateData() {
+  // Add the lineGenerator path.
+  // svg.append("path")
+  //   .attr("class", "line")
+  //   .attr("d", lineGenerator(datePrice));
 
-	console.log(api)
+  svg.append("path")
+  .data([datePrice])
+  .attr("class", "line")
+  .attr("d", lineGenerator);
 
-  // Get the data again
-  d3.csv("data-alt.csv", function(error, data) {
-   	data.forEach(function(d) {
-    	d.date = parseDate(d.date);
-    	d.close = +d.close;
-    });
+  // Add the X Axis
+  svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis);
 
-  	// Scale the range of the data again 
-  	x.domain(d3.extent(data, function(d) { return d.date; }));
-    y.domain([0, d3.max(data, function(d) { return d.close; })]);
+  // Add the Y Axis
+  svg.append("g")
+    .attr("class", "y axis")
+    .call(yAxis);
 
-    // Select the section we want to apply our changes to
-    var svg = d3.select("body").transition();
-
-    // Make the changes
-    svg.select(".line")   // change the line
-        .duration(750)
-        .attr("d", valueline(data));
-    svg.select(".x.axis") // change the x axis
-        .duration(750)
-        .call(xAxis);
-    svg.select(".y.axis") // change the y axis
-        .duration(750)
-        .call(yAxis);
-
-  });
 }
 
-});
+		
+
+	
+
+
+
+
+
+
+// ** Update datePrice section (Called from the onclick)
+// function updateData() {
+
+	// var output = {
+	//     datePrice: datePrice,
+	//     hiLoDataOBJ: latestData,
+	//     hiLoDataARRAY: data
+ //  	}
+
+  
+
+   // 	datePrice.forEach(function(d) {
+   //  	d.date = parseDate(d.date);
+   //  	d.close = +d.close;
+   //  })
+
+  	// // Scale the range of the datePrice again 
+  	// x.domain(d3.extent(datePrice, function(d) { return d.date; }));
+   //  y.domain([0, d3.max(datePrice, function(d) { return d.close; })]);
+
+   //  // Select the section we want to apply our changes to
+   //  var svg = d3.select("body").transition();
+
+   //  // Make the changes
+   //  svg.select(".line")   // change the line
+   //      .duration(750)
+   //      .attr("d", lineGenerator(datePrice));
+   //  svg.select(".x.axis") // change the x axis
+   //      .duration(750)
+   //      .call(xAxis);
+   //  svg.select(".y.axis") // change the y axis
+   //      .duration(750)
+   //      .call(yAxis);
+
+
+})

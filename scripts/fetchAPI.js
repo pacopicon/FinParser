@@ -1,16 +1,16 @@
 // fetch function
 
-function callDatePriceAPI(timeScale, TEXT) {
+function callDatePriceAPI(timeScale, security) {
   if (timeScale == 1) {
-    var http = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=' + TEXT[0] +'&interval=1min&outputsize=full&apikey=5JSEEXSISXT9VKNO'
+    var http = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=' + security +'&interval=1min&outputsize=full&apikey=5JSEEXSISXT9VKNO'
   } else {
-    var http = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + TEXT[0] + '&outputsize=full&apikey=5JSEEXSISXT9VKNO'
+    var http = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + security + '&outputsize=full&apikey=5JSEEXSISXT9VKNO'
   }
 
   fetch(http)
   .then(function(response) {
     return response.json()
-    console.log('callDatePriceAPI fired. timeScale =' + timeScale + 'TEXT[0] = ' + TEXT[0] + '. http = ' + http);
+    console.log('callDatePriceAPI fired. timeScale =' + timeScale + 'security = ' + security + '. http = ' + http);
   })
   .then(function(json) {
     console.log('callDatePriceAPI json parsing SUCCEEDED!!!')
@@ -151,9 +151,9 @@ function callDatePriceAPI(timeScale, TEXT) {
       Number(priceArray[datePrice.length-1][0]), highest, lowest, Number(priceArray[0][3]), totalVol ]
 
     var output = {
-	    GRAPHIC: datePrice,
-	    NUMERIC: latestData,
-	    data: data
+	    datePrice: datePrice,
+	    hiLoDataOBJ: latestData,
+	    hiLoDataARRAY: data
   	}
 
   	return output
@@ -193,13 +193,11 @@ function callDatePriceAPI(timeScale, TEXT) {
         volume: 0,
         nowDate: 'market is closed'
       }
-    
-      
-
+   
      var output = {
-	    GRAPHIC: { "Meta Data":{},"Time Series (Daily)":{} },
-      NUMERIC: latestData,
-      data: [0,0,0,0,0]
+	    datePrice: { "Meta Data":{},"Time Series (Daily)":{} },
+      hiLoDataOBJ: latestData,
+      hiLoDataARRAY: [0,0,0,0,0]
   	}
 
   	return output
